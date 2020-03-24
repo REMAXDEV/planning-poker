@@ -25,6 +25,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.2.1
         with:
-          ACCESS_TOKEN: f8eaa4540f2429b800a4f95616368ed16f5674bf
+          ACCESS_TOKEN: 647da6199f95a2756d1ae418065c8d7484829485
           BRANCH: gh-pages
           FOLDER: dist
