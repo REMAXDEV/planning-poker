@@ -25,6 +25,6 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.2.1
         with:
-          ACCESS_TOKEN: ${{ secrets.CICD_TOKEN }}
+          ACCESS_TOKEN: c020a692fdd3d8e10e7cd7758656fb91abd23965
           BRANCH: gh-pages
-          FOLDER: build
+          FOLDER: dist

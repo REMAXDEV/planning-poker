@@ -1,6 +1,8 @@
 module.exports = {
   runtimeCompiler: true,
 
+  publicPath: '/planning-poker/',
+
   css: {
     loaderOptions: {
       sass: {
