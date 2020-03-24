@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-dark">
     <router-link class="navbar-brand" to="/">
-      <img src="/img/logo.png" class="d-inline-block align-top mr-2" />
+      <img src="img/logo.png" class="d-inline-block align-top mr-2" />
       Planning Poker
     </router-link>
   </nav>
