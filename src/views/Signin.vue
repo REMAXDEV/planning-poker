@@ -4,11 +4,18 @@
     <form @submit="onSubmit">
       <div class="form-group">
         <label for="exampleInputEmail1">Session Name</label>
-        <input type="text" class="form-control" placeholder="e.g. remax/motto..." v-model="room" />
+        <input
+          ref="roomInput"
+          type="text"
+          class="form-control"
+          placeholder="e.g. remax/motto..."
+          v-model="room"
+          required
+        />
       </div>
       <div class="form-group">
         <label for="exampleInputPassword1">Your Name</label>
-        <input type="text" class="form-control" v-model="myName" />
+        <input ref="myNameInput" type="text" class="form-control" v-model="myName" required />
       </div>
       <div class="mt-4">
         <button type="submit" class="btn btn-primary">Join Session</button>
@@ -28,17 +35,18 @@ export default class Signin extends Vue {
   mounted() {
     this.myName = localStorage.getItem('myName') || '';
     this.room = localStorage.getItem('room') || '';
+    if (!this.room) {
+      (this.$refs.roomInput as HTMLInputElement).focus();
+    } else if (!this.myName) {
+      (this.$refs.myNameInput as HTMLInputElement).focus();
+    }
   }
 
   onSubmit(e: Event) {
     e.preventDefault();
-    this.myName = this.myName.toLowerCase().trim();
-    this.room = this.room.toLowerCase().trim();
-    if (this.myName) {
+    this.myName = this.myName.trim();
+    if (this.room && this.myName) {
       localStorage.setItem('myName', this.myName);
-    }
-    if (this.room) {
-      localStorage.setItem('room', this.room);
       this.$router.push('/' + this.room);
     }
   }

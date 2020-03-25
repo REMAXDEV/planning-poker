@@ -21,6 +21,7 @@
     <div class="text-secondary text-center">
       <p><span class="badge badge-secondary">Tips</span> To delete a player, right click its name.</p>
       <!-- <pre>{{ players }}</pre> -->
+      <p><a href="javascript:;" @click="refresh">Refresh this page</a></p>
     </div>
   </div>
 </template>
@@ -53,36 +54,31 @@ export default class Main extends Vue {
   players: Players = {};
 
   created() {
-    this.room = this.$route.params.room.toLowerCase();
-    this.myName = localStorage.getItem('myName') || '';
-    if (!this.myName) {
-      const name = prompt('Welcome! May I have your name?');
-      if (name) {
-        localStorage.setItem('myName', name.toLowerCase());
-        this.myName = name;
-      } else {
-        this.myName = 'Guest';
-      }
-    }
-    // init
-    db.signIn(this.room, this.myName);
+    this.room = this.$route.params.room.toLowerCase().trim();
+    this.myName = (localStorage.getItem('myName') || '').toLowerCase();
+    localStorage.setItem('room', this.room);
   }
 
   mounted() {
-    db.watch(snapshot => {
-      const res = snapshot.val();
-      this.players = res.players;
-      this.myPoint = this.players[this.myName].point;
-      //
-      this.showPoints =
-        res.showPoints == 1
-          ? true
-          : Object.values(this.players).filter(player => {
-              return player.point == 0;
-            }).length === 0;
-    });
-    // init
-    this.point(0);
+    if (!this.room || !this.myName) {
+      this.$router.push('/');
+    } else {
+      // init
+      db.signIn(this.room, this.myName);
+      // listener
+      db.watch(snapshot => {
+        const res = snapshot.val();
+        this.players = res.players;
+        this.myPoint = this.players[this.myName].point;
+        //
+        this.showPoints =
+          res.showPoints == 1
+            ? true
+            : Object.values(this.players).filter(player => {
+                return player.point == 0;
+              }).length === 0;
+      });
+    }
   }
 
   point(pt: number) {
@@ -95,6 +91,10 @@ export default class Main extends Vue {
 
   showVotes() {
     db.showVotes();
+  }
+
+  refresh() {
+    window.location.reload();
   }
 
   beforeDestroy() {

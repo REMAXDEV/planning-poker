@@ -4,7 +4,7 @@ import 'firebase/database';
 import { Players } from '../types/player';
 
 class FirebaseService {
-  db: any = null;
+  db: firebase.database.Database;
   room = '';
   player = '';
 
@@ -17,9 +17,10 @@ class FirebaseService {
   signIn(room: string, player: string): void {
     this.room = room.toLowerCase();
     this.player = player.toLowerCase();
+    this.setPoint(0);
     //
     const connectedRef = this.db.ref('.info/connected');
-    connectedRef.on('value', (snap: any) => {
+    connectedRef.on('value', (snap: firebase.database.DataSnapshot) => {
       if (snap.val() === true) {
         const con = this.db.ref(this.room + '/players/' + this.player + '/connected');
         con.onDisconnect().set(false);
@@ -39,13 +40,13 @@ class FirebaseService {
     this.db
       .ref(this.room)
       .once('value')
-      .then((snapshot: any) => {
+      .then((snapshot: firebase.database.DataSnapshot) => {
         const res = snapshot.val();
         const players: Players = {};
         for (const index in res.players) {
           players[index] = {
             point: 0,
-            connected: res.players[index].connected,
+            connected: !!res.players[index].connected,
           };
         }
         this.db
@@ -66,7 +67,7 @@ class FirebaseService {
       .catch(this.errorHandler);
   }
 
-  watch(callbackFunc: (snapshot: any) => void) {
+  watch(callbackFunc: (snapshot: firebase.database.DataSnapshot) => void) {
     this.db.ref(this.room).on('value', callbackFunc);
     console.info('Connect to: ' + this.room);
   }
