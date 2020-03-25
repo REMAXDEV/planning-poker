@@ -6,19 +6,33 @@ import { Players } from '../types/player';
 class FirebaseService {
   db: any = null;
   room = '';
+  player = '';
 
   constructor(config: { [index: string]: string }) {
     firebase.initializeApp(config);
     this.db = firebase.database();
-    console.log('new FirebaseService');
+    console.info('new FirebaseService');
   }
 
-  setRoom(room: string): void {
+  signIn(room: string, player: string): void {
     this.room = room.toLowerCase();
+    this.player = player.toLowerCase();
+    //
+    const connectedRef = this.db.ref('.info/connected');
+    connectedRef.on('value', (snap: any) => {
+      if (snap.val() === true) {
+        const con = this.db.ref(this.room + '/players/' + this.player + '/connected');
+        con.onDisconnect().set(false);
+        con.set(true);
+      }
+    });
   }
 
-  setPoint(player: string, pt: number): void {
-    this.db.ref(this.room + '/players/' + player.toLowerCase() + '/point').set(pt);
+  setPoint(pt: number): void {
+    this.db
+      .ref(this.room + '/players/' + this.player + '/point')
+      .set(pt)
+      .catch(this.errorHandler);
   }
 
   clearVotes(): void {
@@ -31,38 +45,58 @@ class FirebaseService {
         for (const index in res.players) {
           players[index] = {
             point: 0,
+            connected: res.players[index].connected,
           };
         }
-        this.db.ref(this.room).set({
-          showPoints: 0,
-          players: players,
-        });
-      });
+        this.db
+          .ref(this.room)
+          .set({
+            showPoints: 0,
+            players: players,
+          })
+          .catch(this.errorHandler);
+      })
+      .catch(this.errorHandler);
   }
 
-  showVotes(): void {
-    this.db.ref(this.room + '/showPoints').set(1);
+  showVotes() {
+    this.db
+      .ref(this.room + '/showPoints')
+      .set(1)
+      .catch(this.errorHandler);
   }
 
   watch(callbackFunc: (snapshot: any) => void) {
-    const roomRef = this.db.ref(this.room);
-    roomRef.on('value', callbackFunc);
-    return roomRef;
+    this.db.ref(this.room).on('value', callbackFunc);
+    console.info('Connect to: ' + this.room);
   }
 
   deletePlayer(player: string): void {
-    this.db.ref(this.room + '/players/' + player.toLocaleLowerCase()).set(null);
+    this.db
+      .ref(this.room + '/players/' + player.toLocaleLowerCase())
+      .remove()
+      .catch(this.errorHandler);
+  }
+
+  detachListener() {
+    this.db.ref(this.room).off();
+    this.db.ref('.info/connected').off();
+    console.info('Disconnect from: ' + this.room);
+  }
+
+  errorHandler(res: any) {
+    console.error(res);
   }
 }
 
 const firebaseService = new FirebaseService({
-  apiKey: 'AIzaSyAW076Ai3lOBhONLt8pKfUA0jedjf5A7RY',
-  authDomain: 'planning-poker-remax.firebaseapp.com',
-  databaseURL: 'https://planning-poker-remax.firebaseio.com',
-  projectId: 'planning-poker-remax',
-  storageBucket: 'planning-poker-remax.appspot.com',
-  messagingSenderId: '1050364771989',
-  appId: '1:1050364771989:web:a5c621b239496dfaf9e59c',
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
 });
 
 export default firebaseService;

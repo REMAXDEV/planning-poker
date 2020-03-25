@@ -10,15 +10,18 @@
       <tr v-for="(player, index) in players" :key="index" :class="{ 'table-warning': player.point == 0 }">
         <td @contextmenu="deletePlayer($event, index)">{{ index | nameFilter }}</td>
         <td>
-          <font-awesome-icon
-            v-if="!showPoints && player.point != 0"
-            icon="check-circle"
-            size="lg"
-            class="text-success"
-          />
-          <font-awesome-icon v-else-if="!showPoints" icon="question-circle" size="lg" class="text-secondary" />
-          <template v-if="(index === myName || showPoints) && player.point != 0">
-            {{ player.point > 0 ? player.point : '?' }}
+          <font-awesome-icon v-if="!player.connected" icon="wifi" class="text-danger" title="User disconnected." />
+          <template v-else>
+            <font-awesome-icon
+              v-if="!showPoints && player.point != 0"
+              icon="check-circle"
+              size="lg"
+              class="text-success"
+            />
+            <font-awesome-icon v-else-if="!showPoints" icon="ellipsis-h" size="lg" class="text-secondary" />
+            <template v-if="(index === myName || showPoints) && player.point != 0">
+              {{ player.point > 0 ? player.point : '?' }}
+            </template>
           </template>
         </td>
       </tr>
@@ -28,7 +31,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import db from '../services/Firebase';
+import db from '../services/firebase';
 import { Players } from '../types/player';
 import nameFilter from '../filters/nameFilter';
 
@@ -55,5 +58,8 @@ export default class PlayersComponent extends Vue {
 <style scoped lang="scss">
 table {
   min-width: 16em;
+}
+.text-danger {
+  opacity: 0.5;
 }
 </style>

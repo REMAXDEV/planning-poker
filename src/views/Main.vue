@@ -30,7 +30,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import PokerComponent from '../components/PokerComponent.vue';
 import PlayersComponent from '../components/PlayersComponent.vue';
 
-import db from '../services/Firebase';
+import db from '../services/firebase';
 import nameFilter from '../filters/nameFilter';
 import { Players } from '../types/player';
 
@@ -46,7 +46,7 @@ import { Players } from '../types/player';
 export default class Main extends Vue {
   room = '';
   myName = '';
-  myPoint = -1;
+  myPoint = 0;
 
   // from database
   showPoints = false;
@@ -65,7 +65,7 @@ export default class Main extends Vue {
       }
     }
     // init
-    db.setRoom(this.room);
+    db.signIn(this.room, this.myName);
   }
 
   mounted() {
@@ -86,7 +86,7 @@ export default class Main extends Vue {
   }
 
   point(pt: number) {
-    db.setPoint(this.myName, pt);
+    db.setPoint(pt);
   }
 
   clearVotes() {
@@ -95,6 +95,10 @@ export default class Main extends Vue {
 
   showVotes() {
     db.showVotes();
+  }
+
+  beforeDestroy() {
+    db.detachListener();
   }
 }
 </script>
