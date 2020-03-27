@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app';
 import 'firebase/database';
 
-import { Players } from '../types/player';
+import { Room } from '../types/room';
 
 class FirebaseService {
   db: firebase.database.Database;
@@ -15,18 +15,21 @@ class FirebaseService {
   }
 
   signIn(room: string, player: string): void {
+    this.db.goOnline();
     this.room = room.toLowerCase();
     this.player = player.toLowerCase();
-    this.setPoint(0);
-    //
-    const connectedRef = this.db.ref('.info/connected');
-    connectedRef.on('value', (snap: firebase.database.DataSnapshot) => {
-      if (snap.val() === true) {
-        const con = this.db.ref(this.room + '/players/' + this.player + '/connected');
-        con.onDisconnect().set(false);
-        con.set(true);
-      }
-    });
+    if (this.player) {
+      this.setPoint(0);
+      // track online status
+      const connectedRef = this.db.ref('.info/connected');
+      connectedRef.on('value', (snap: firebase.database.DataSnapshot) => {
+        if (snap.val() === true) {
+          const con = this.db.ref(this.room + '/players/' + this.player + '/connected');
+          con.onDisconnect().remove();
+          con.set(true);
+        }
+      });
+    }
   }
 
   setPoint(pt: number): void {
@@ -42,19 +45,19 @@ class FirebaseService {
       .once('value')
       .then((snapshot: firebase.database.DataSnapshot) => {
         const res = snapshot.val();
-        const players: Players = {};
+        const room: Room = {
+          showPoints: 0,
+          players: {},
+        };
         for (const index in res.players) {
-          players[index] = {
+          room.players[index] = {
             point: 0,
             connected: !!res.players[index].connected,
           };
         }
         this.db
           .ref(this.room)
-          .set({
-            showPoints: 0,
-            players: players,
-          })
+          .set(room)
           .catch(this.errorHandler);
       })
       .catch(this.errorHandler);
@@ -73,16 +76,22 @@ class FirebaseService {
   }
 
   deletePlayer(player: string): void {
-    this.db
-      .ref(this.room + '/players/' + player.toLocaleLowerCase())
-      .remove()
-      .catch(this.errorHandler);
+    if (player) {
+      this.db
+        .ref(this.room + '/players/' + player.toLowerCase())
+        .remove()
+        .catch(this.errorHandler);
+    }
   }
 
   detachListener() {
     this.db.ref(this.room).off();
     this.db.ref('.info/connected').off();
     console.info('Disconnect from: ' + this.room);
+  }
+
+  offline() {
+    this.db.goOffline();
   }
 
   errorHandler(res: any) {

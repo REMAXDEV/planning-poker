@@ -1,7 +1,7 @@
 <template>
   <div class="p-5">
     <h1 class="mb-4 text-center">Sign In</h1>
-    <form @submit="onSubmit">
+    <form @submit.prevent="onSubmit">
       <div class="form-group">
         <label for="exampleInputEmail1">Session Name</label>
         <input
@@ -18,7 +18,8 @@
         <input ref="myNameInput" type="text" class="form-control" v-model="myName" required />
       </div>
       <div class="mt-4">
-        <button type="submit" class="btn btn-primary">Join Session</button>
+        <button type="submit" class="btn btn-primary mr-4">Join Session</button>
+        OR <a href @click.prevent="observer">Join As Observer</a>
       </div>
     </form>
   </div>
@@ -26,6 +27,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import db from '../services/firebase';
 
 @Component
 export default class Signin extends Vue {
@@ -33,21 +35,31 @@ export default class Signin extends Vue {
   myName = '';
 
   mounted() {
-    this.myName = localStorage.getItem('myName') || '';
-    this.room = localStorage.getItem('room') || '';
+    this.myName = this.$store.getters.getName;
+    this.room = this.$store.getters.getRoom;
+    // focus on inputs
     if (!this.room) {
       (this.$refs.roomInput as HTMLInputElement).focus();
     } else if (!this.myName) {
       (this.$refs.myNameInput as HTMLInputElement).focus();
     }
+    // disconnect
+    db.offline();
   }
 
-  onSubmit(e: Event) {
-    e.preventDefault();
+  onSubmit() {
     this.myName = this.myName.trim();
     if (this.room && this.myName) {
-      localStorage.setItem('myName', this.myName);
+      this.$store.commit('setName', this.myName);
       this.$router.push('/' + this.room);
+    }
+  }
+
+  observer() {
+    if (this.room) {
+      this.$router.push('/' + this.room + '?observer=1');
+    } else {
+      (this.$refs.roomInput as HTMLInputElement).focus();
     }
   }
 }

@@ -4,10 +4,10 @@ import router from './router';
 import store from './store';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faQuestionCircle, faCheckCircle, faEllipsisH, faWifi } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faEllipsisH, faWifi, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-library.add(faQuestionCircle);
+library.add(faUserCircle);
 library.add(faCheckCircle);
 library.add(faEllipsisH);
 library.add(faWifi);
