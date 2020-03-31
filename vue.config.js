@@ -1,7 +1,7 @@
 module.exports = {
   runtimeCompiler: true,
 
-  publicPath: '/planning-poker/',
+  publicPath: process.env.PUBLIC_PATH,
 
   // css: {
   //   loaderOptions: {

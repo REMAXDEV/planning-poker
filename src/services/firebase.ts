@@ -87,10 +87,11 @@ class FirebaseService {
   detachListener() {
     this.db.ref(this.room).off();
     this.db.ref('.info/connected').off();
-    console.info('Disconnect from: ' + this.room);
+    console.info('Detach listener: ' + this.room);
   }
 
   offline() {
+    console.info('Disconnected.');
     this.db.goOffline();
   }
 

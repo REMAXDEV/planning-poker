@@ -53,7 +53,7 @@ $duration: 1000;
   top: 0;
   opacity: 0;
 
-  @for $i from 1 through 13 {
+  @for $i from 1 through 19 {
     &:nth-child(#{$i}) {
       left: $i * 5%;
       transform: rotate(#{randomNum(-80, 80)}deg);

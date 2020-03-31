@@ -144,6 +144,8 @@ export default class Main extends Vue {
 
   beforeDestroy() {
     db.detachListener();
+    // disconnect
+    db.offline();
   }
 }
 </script>

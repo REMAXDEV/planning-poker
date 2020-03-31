@@ -27,7 +27,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import db from '../services/firebase';
 
 @Component
 export default class Signin extends Vue {
@@ -43,8 +42,6 @@ export default class Signin extends Vue {
     } else if (!this.myName) {
       (this.$refs.myNameInput as HTMLInputElement).focus();
     }
-    // disconnect
-    db.offline();
   }
 
   onSubmit() {

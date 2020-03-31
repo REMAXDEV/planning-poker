@@ -12,11 +12,11 @@ export default new Vuex.Store({
   getters: {
     getName(state) {
       state.myName = localStorage.getItem('myName') || '';
-      return state.myName;
+      return state.myName.toLowerCase();
     },
     getRoom(state) {
       state.room = localStorage.getItem('room') || '';
-      return state.room;
+      return state.room.toLowerCase();
     },
   },
   mutations: {
