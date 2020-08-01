@@ -49,7 +49,7 @@ exports.everyoneVoted = functions.database.ref('/{room}/players/{playerName}/poi
 
 /* ============= */
 
-function pushToElastic(roomName, data) {
+function pushToElastic(roomName, points) {
   const { Client } = require('@elastic/elasticsearch');
   const client = new Client({
     node: functions.config().elastic.host,
@@ -70,7 +70,7 @@ function pushToElastic(roomName, data) {
       body: {
         room: roomName,
         time: time,
-        points: shuffle(data),
+        points: shuffle(points),
       },
     },
     function(err, resp, status) {
@@ -83,24 +83,24 @@ function pushToElastic(roomName, data) {
   );
 }
 
-function shuffle(a) {
+function shuffle(arr) {
   let j, x, i;
-  for (i = a.length - 1; i > 0; i--) {
+  for (i = arr.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1));
-    x = a[i];
-    a[i] = a[j];
-    a[j] = x;
+    x = arr[i];
+    arr[i] = arr[j];
+    arr[j] = x;
   }
-  return a;
+  return arr;
 }
 
-function playerPoints(players, requireAll) {
+function playerPoints(players, validate) {
   const points = [];
   for (const key in players) {
     if (players[key].point > 0) {
       points.push(players[key].point);
     }
-    if (players[key].point == 0 && requireAll) {
+    if (players[key].point == 0 && validate) {
       return [];
     }
   }
