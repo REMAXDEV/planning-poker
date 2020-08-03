@@ -64,7 +64,7 @@ function pushToElastic(roomName, points, sessionTime) {
     // payload
     const payload = {
         index: 'planning-poker',
-        id: roomName.replace(/\W/g, '') + '@' + sessionTime,
+        id: roomName.replace(/\W/g, '') + '@' + sessionTime.substr(0,16),
         body: {
             room: roomName,
             time: sessionTime,
