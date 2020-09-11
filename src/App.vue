@@ -2,6 +2,7 @@
   <div id="app" class="mx-auto bg-light shadow-sm position-relative">
     <transition name="fade">
       <confetti-component v-if="$store.state.confetti" />
+      <party-component v-if="$store.state.superConfetti" />
     </transition>
     <header-component />
     <div class="position-relative">
@@ -14,14 +15,16 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HeaderComponent from './components/HeaderComponent.vue';
 import ConfettiComponent from './components/ConfettiComponent.vue';
+import PartyComponent from './components/PartyComponent.vue';
 
 @Component({
   components: {
     HeaderComponent,
     ConfettiComponent,
+    PartyComponent,
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue { }
 </script>
 
 <style lang="scss">

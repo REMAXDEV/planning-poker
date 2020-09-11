@@ -8,7 +8,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ConfettiComponent extends Vue { }
+export default class PartyComponent extends Vue { }
 </script>
 
 <style scoped lang="scss">
@@ -26,9 +26,9 @@ export default class ConfettiComponent extends Vue { }
   background-repeat: no-repeat;
 }
 
-$c-yellow: #ffd300;
+$c-yellow: #17d3ff;
 $c-blue: #17d3ff;
-$c-pink: #ff4e91;
+$c-pink: #17d3ff;
 
 $duration: 1000;
 

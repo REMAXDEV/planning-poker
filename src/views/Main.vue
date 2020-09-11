@@ -2,8 +2,16 @@
   <div class="p-5">
     <h1 class="mb-4 text-center">
       <!-- {{ myName || 'guest' | nameFilter }}
-      @ -->
-      {{ room | nameFilter }}
+      @-->
+      <button
+        @click="toggleCheaterMode"
+        @mouseover="displayCheaterModeTooltip(true)"
+        class="btn btn-lg btn-block"
+        v-bind:class="{'btn-danger': cheaterMode}"
+      >
+        Cheater Mode
+        <span class="text-muted">{{cheaterMode ? '- On': '- Off'}}</span>
+      </button>
     </h1>
     <div class="mb-4" v-if="!observer">
       <poker-component @onPoint="point" :currentPoint="myPoint" class="justify-content-center" />
@@ -13,6 +21,7 @@
       :players="players"
       :showPoints="showPoints"
       :myName="myName"
+      :cheaterModeOn="cheaterMode"
     />
     <div class="row mb-5" v-if="!observer">
       <div class="col">
@@ -23,8 +32,12 @@
       </div>
     </div>
     <div class="text-secondary text-center">
-      <p v-if="observer"><span class="badge badge-info">info</span> You are an observer of this session.</p>
-      <p v-if="!observer"><span class="badge badge-secondary">Tips</span> To delete a player, right click its name.</p>
+      <p v-if="observer">
+        <span class="badge badge-info">info</span> You are an observer of this session.
+      </p>
+      <p v-if="!observer">
+        <span class="badge badge-secondary">Tips</span> To delete a player, right click its name.
+      </p>
       <!-- <pre>{{ players }}</pre> -->
       <p>
         <a href @click.prevent="refresh">Refresh</a>
@@ -58,6 +71,7 @@ export default class Main extends Vue {
   myName = '';
   myPoint = 0;
   observer: boolean = false;
+  cheaterMode: boolean = false;
 
   // from database
   showPoints = false;
@@ -88,6 +102,9 @@ export default class Main extends Vue {
         const playerArr = Object.values(this.players);
         this.showPoints = res.showPoints == 1 ? true : this.allPlayersVoted(playerArr);
         if (this.isConsistent(playerArr)) {
+          if (this.nobodyCheated(playerArr) && this.cheaterMode) {
+            this.$store.commit('showSuperConfetti');
+          };
           this.$store.commit('showConfetti');
         }
       });
@@ -96,6 +113,10 @@ export default class Main extends Vue {
 
   point(pt: number) {
     db.setPoint(pt);
+  }
+
+  toggleCheaterMode() {
+    this.cheaterMode = !this.cheaterMode;
   }
 
   clearVotes() {
@@ -128,6 +149,16 @@ export default class Main extends Vue {
     return consistent;
   }
 
+  nobodyCheated(playerArr: Player[]): boolean {
+    const cheaters = playerArr.filter(player => {
+      return player.cheated && player.point >= 0;
+    });
+    if (cheaters.length > -1) {
+      return false;
+    }
+    return true;
+  }
+
   allPlayersVoted(playerArr: Player[]) {
     return (
       playerArr.filter(player => {
@@ -139,6 +170,9 @@ export default class Main extends Vue {
   updateMyPoint() {
     if (this.players[this.myName]) {
       this.myPoint = this.players[this.myName].point;
+      if (this.showPoints) {
+        this.players[this.myName].cheated = true;
+      }
     }
   }
 
