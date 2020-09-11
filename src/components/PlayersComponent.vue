@@ -3,7 +3,7 @@
     <thead class="thead-dark">
       <tr>
         <th scope="col">Player</th>
-        <th scope="col">Point</th>
+        <th scope="col">Points</th>
       </tr>
     </thead>
     <tbody :class="{ 'table-success': showPoints }">
@@ -61,6 +61,7 @@ export default class PlayersComponent extends Vue {
   @Prop() myName!: string;
   @Prop() cheated!: boolean;
   @Prop() cheaterModeOn!: boolean;
+  @Prop() timedVoting!: boolean;
 
   deletePlayer(e: Event, player: string) {
     e.preventDefault();
@@ -69,7 +70,6 @@ export default class PlayersComponent extends Vue {
     }
   }
   checkCheaters(player: Player) {
-    console.log(this.cheaterModeOn);
     if (this.cheaterModeOn && player.cheated) {
       return true;
     }
