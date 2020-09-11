@@ -52,6 +52,7 @@ class FirebaseService {
         for (const index in res.players) {
           room.players[index] = {
             point: 0,
+            cheated: false,
             connected: !!res.players[index].connected,
           };
         }

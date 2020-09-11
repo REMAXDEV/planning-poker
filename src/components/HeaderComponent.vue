@@ -2,7 +2,7 @@
   <nav class="navbar navbar-dark bg-dark">
     <router-link class="navbar-brand" to="/">
       <img src="img/favicon-192x192.png" class="logo d-inline-block align-top mr-2" />
-      Planning Poker
+      {{$store.state.room || "John's" | nameFilter}} Planning Poker
     </router-link>
     <span class="navbar-text">
       <font-awesome-icon icon="user-circle" size="lg" />
@@ -20,7 +20,7 @@ import nameFilter from '../filters/nameFilter';
     nameFilter,
   },
 })
-export default class HeaderComponent extends Vue {}
+export default class HeaderComponent extends Vue { }
 </script>
 
 <style scoped lang="scss">

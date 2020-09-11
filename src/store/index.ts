@@ -8,6 +8,7 @@ export default new Vuex.Store({
     myName: '',
     room: '',
     confetti: false,
+    superConfetti: false,
   },
   getters: {
     getName(state) {
@@ -32,6 +33,12 @@ export default new Vuex.Store({
       state.confetti = true;
       window.setTimeout(() => {
         state.confetti = false;
+      }, 5000);
+    },
+    showSuperConfetti(state) {
+      state.superConfetti = true;
+      window.setTimeout(() => {
+        state.superConfetti = false;
       }, 5000);
     },
   },
