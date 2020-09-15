@@ -1,88 +1,73 @@
 <template>
-  <div class="p-5">
-    <h1 class="mb-4 text-center">
-      <!-- {{ myName || 'guest' | nameFilter }}
-      @-->
-      {{gameMode}}
-      <!--Room Settings -@-->
-      <div class="row">
-        <div class="col">
-          <button @click="toggleSettings" class="btn btn-lg btn-block btn-light">
-            Change Game Mode
-            <font-awesome-icon icon="cog" size="md" class="text-secondary" />
+  <div>
+    <div id="desk" class="position-relative mb-4 px-3">
+      <h1 class="py-4 text-center text-white">
+        {{ room }}
+        <button @click="toggleSettings" class="btn btn-sm btn-outline-light">
+          <font-awesome-icon icon="cog" size="md" />
+          {{ gameMode }}
+        </button>
+
+        <span v-if="settingsOpen">
+          <button
+            @click="changeGameMode('Standard')"
+            class="btn btn-sm ml-3"
+            v-bind:class="[gameMode === 'Standard' ? 'btn-danger' : 'btn-light']"
+          >
+            Standard
           </button>
+          <button
+            @click="changeGameMode('Cheater')"
+            class="btn btn-sm  ml-3"
+            v-bind:class="[cheaterMode ? 'btn-danger' : 'btn-light']"
+          >
+            Cheater
+          </button>
+          <button
+            @click="changeGameMode('Timed Voting')"
+            class="btn btn-sm  ml-3"
+            v-bind:class="[timedVoting ? 'btn-danger' : 'btn-light']"
+          >
+            Timed
+          </button>
+        </span>
+      </h1>
+
+      <div class="mb-4" v-if="!observer">
+        <div v-if="timedVoting" class="position-absolute text-white" id="timed-voting">
+          <div class="col">
+            <button @click="startVoting" v-if="!voting" class="btn btn-lg btn-block btn-primary mt-5">
+              Start the clock!
+            </button>
+          </div>
+          <div class="col text-center" v-if="timedVoting && voting">
+            <h3>Place your bets!</h3>
+            <base-timer-component @timesUp="timesUp" />
+          </div>
+        </div>
+        <div id="pokers" class="position-absolute" v-if="!timedVoting || (timedVoting && voting)">
+          <poker-component @onPoint="point" :currentPoint="myPoint" class="justify-content-center" />
         </div>
       </div>
 
-      <div v-if="settingsOpen" class="row mt-2">
-        <div class="col">
-          <button
-            @click="changeGameMode('Standard')"
-            class="btn btn-lg btn-block btn-outline"
-            v-bind:class="{'btn-danger' : gameMode==='Standard'}"
-          >Standard</button>
-        </div>
-        <div class="col">
-          <button
-            @click="changeGameMode('Cheater')"
-            class="btn btn-lg btn-block btn-outline"
-            v-bind:class="[cheaterMode ? 'btn-danger': 'btn-light']"
-          >Cheater</button>
-        </div>
-        <div class="col">
-          <button
-            @click="changeGameMode('Timed Voting')"
-            class="btn btn-lg btn-block"
-            v-bind:class="[timedVoting ? 'btn-danger': 'btn-light']"
-          >Timed</button>
-        </div>
-      </div>
-    </h1>
-    <div class="mb-4" v-if="!observer">
-      <div v-if="timedVoting">
-        <div class="col">
-          <button
-            @click="startVoting"
-            v-if="!voting"
-            class="btn btn-lg btn-block btn-primary"
-          >Start the clock!</button>
-        </div>
-        <div class="col text-center" v-if="timedVoting && voting">
-          <h1>Place your bets!</h1>
-          <base-timer-component @timesUp="timesUp" />
-        </div>
-      </div>
-      <poker-component
-        v-if="!timedVoting || (timedVoting && voting)"
-        @onPoint="point"
-        :currentPoint="myPoint"
-        class="justify-content-center"
+      <players-component
+        class="mt-5"
+        :players="players"
+        :showPoints="showPoints"
+        :myName="myName"
+        :gameMode="gameMode"
+        :cheaterModeOn="cheaterMode"
+        :timedVoting="timedVoting"
       />
-    </div>
-    <players-component
-      class="table text-center mb-5 bg-light w-auto mx-auto shadow-sm"
-      :players="players"
-      :showPoints="showPoints"
-      :myName="myName"
-      :gameMode="gameMode"
-      :cheaterModeOn="cheaterMode"
-      :timedVoting="timedVoting"
-    />
-    <div class="row mb-5" v-if="!observer && !timedVoting">
-      <div class="col">
-        <button @click="clearVotes" class="btn btn-lg btn-block btn-danger">Clear Votes</button>
-      </div>
-      <div class="col">
-        <button @click="showVotes" class="btn btn-lg btn-block btn-primary">Show Votes</button>
+
+      <div id="vote-actions" class="d-flex justify-content-between position-relative" v-if="!observer && !timedVoting">
+        <button @click="clearVotes" class="btn btn-lg btn-dark">Clear Votes</button>
+        <button @click="showVotes" class="btn btn-lg  btn-dark">Show Votes</button>
       </div>
     </div>
     <div class="text-secondary text-center">
-      <p v-if="observer">
-        <span class="badge badge-info">info</span> You are an observer of this session.
-      </p>
-      <p v-if="!observer">
-        <span class="badge badge-secondary">Tips</span> To delete a player, right click its name.
-      </p>
+      <p v-if="observer"><span class="badge badge-info">info</span> You are an observer of this session.</p>
+      <p v-if="!observer"><span class="badge badge-secondary">Tips</span> To delete a player, right click its name.</p>
       <!-- <pre>{{ players }}</pre> -->
       <p>
         <a href @click.prevent="refresh">Refresh</a>
@@ -96,7 +81,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import PokerComponent from '../components/PokerComponent.vue';
-import PlayersComponent from '../components/PlayersComponent.vue';
+import PlayersComponent from '../components/DesktopComponent.vue';
 import BaseTimerComponent from '../components/BaseTimer.vue';
 
 import db from '../services/firebase';
@@ -155,7 +140,7 @@ export default class Main extends Vue {
         if (this.isConsistent(playerArr)) {
           if (this.nobodyCheated(playerArr) && this.cheaterMode) {
             this.$store.commit('showSuperConfetti');
-          };
+          }
           this.$store.commit('showConfetti');
         }
       });
@@ -163,10 +148,11 @@ export default class Main extends Vue {
   }
 
   point(pt: number) {
-    db.setPoint(pt);
+    db.setPoint(pt, this.showPoints);
   }
 
   changeGameMode(mode: string) {
+    this.settingsOpen = false;
     db.clearVotes();
     this.gameMode = mode;
     switch (mode) {
@@ -252,9 +238,9 @@ export default class Main extends Vue {
   updateMyPoint() {
     if (this.players[this.myName]) {
       this.myPoint = this.players[this.myName].point;
-      if (this.showPoints && this.cheaterMode) {
-        this.players[this.myName].cheated = true;
-      }
+      // if (this.showPoints && this.cheaterMode) {
+      //   this.players[this.myName].cheated = true;
+      // }
     }
   }
 
@@ -266,4 +252,22 @@ export default class Main extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+#desk {
+  width: 960px;
+  height: 580px;
+  background: url('../../public/img/poker-desk.jpg');
+  #vote-actions {
+    z-index: 10;
+  }
+  #pokers {
+    z-index: 5;
+    bottom: 15px;
+    width: 100%;
+  }
+  #timed-voting {
+    top: 2rem;
+    right: 1rem;
+  }
+}
+</style>

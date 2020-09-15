@@ -32,11 +32,19 @@ class FirebaseService {
     }
   }
 
-  setPoint(pt: number): void {
+  setPoint(pt: number, cheated: boolean): void {
+    // save the vote
     this.db
       .ref(this.room + '/players/' + this.player + '/point')
       .set(pt)
       .catch(this.errorHandler);
+    // save cheated
+    if (cheated) {
+      this.db
+        .ref(this.room + '/players/' + this.player + '/cheated')
+        .set(true)
+        .catch(this.errorHandler);
+    }
   }
 
   clearVotes(): void {

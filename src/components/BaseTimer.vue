@@ -27,16 +27,16 @@ const ALERT_THRESHOLD = 5;
 
 const COLOR_CODES = {
   info: {
-    color: "green"
+    color: 'green',
   },
   warning: {
-    color: "orange",
-    threshold: WARNING_THRESHOLD
+    color: 'orange',
+    threshold: WARNING_THRESHOLD,
   },
   alert: {
-    color: "red",
-    threshold: ALERT_THRESHOLD
-  }
+    color: 'red',
+    threshold: ALERT_THRESHOLD,
+  },
 };
 
 const TIME_LIMIT = 10;
@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       timePassed: 0,
-      timerInterval: null
+      timerInterval: null,
     };
   },
 
@@ -85,7 +85,7 @@ export default {
       } else {
         return info.color;
       }
-    }
+    },
   },
 
   watch: {
@@ -93,7 +93,7 @@ export default {
       if (newValue === 0) {
         this.onTimesUp();
       }
-    }
+    },
   },
 
   mounted() {
@@ -108,16 +108,16 @@ export default {
 
     startTimer() {
       this.timerInterval = setInterval(() => (this.timePassed += 1), 1000);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
 .base-timer {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 150px;
+  height: 150px;
 
   &__svg {
     transform: scaleX(-1);
@@ -157,8 +157,8 @@ export default {
 
   &__label {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 150px;
+    height: 150px;
     top: 0;
     display: flex;
     align-items: center;

@@ -1,13 +1,13 @@
 <template>
-  <div id="app" class="mx-auto bg-light shadow-sm position-relative">
-    <transition name="fade">
-      <confetti-component v-if="$store.state.confetti" />
-      <party-component v-if="$store.state.superConfetti" />
-    </transition>
+  <div id="app" class="mx-auto shadow position-relative">
     <header-component />
     <div class="position-relative">
       <router-view />
     </div>
+    <transition name="fade">
+      <confetti-component v-if="$store.state.confetti" />
+      <party-component v-if="$store.state.superConfetti" />
+    </transition>
   </div>
 </template>
 
@@ -24,7 +24,7 @@ import PartyComponent from './components/PartyComponent.vue';
     PartyComponent,
   },
 })
-export default class App extends Vue { }
+export default class App extends Vue {}
 </script>
 
 <style lang="scss">
@@ -32,7 +32,8 @@ export default class App extends Vue { }
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 @import './styles/global.scss';
 #app {
-  max-width: 500px;
+  width: 960px;
+  background-color: #000;
   min-height: 100%;
   overflow: hidden;
   .view {
