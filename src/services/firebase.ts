@@ -32,7 +32,7 @@ class FirebaseService {
     }
   }
 
-  setPoint(pt: number, cheated: boolean): void {
+  setPoint(pt: number, cheated: boolean = false): void {
     // save the vote
     this.db
       .ref(this.room + '/players/' + this.player + '/point')

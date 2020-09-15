@@ -2,7 +2,7 @@
   <div>
     <div id="desk" class="position-relative mb-4 px-3">
       <h1 class="py-4 text-center text-white">
-        {{ room }}
+        {{ room | nameFilter }}
         <button @click="toggleSettings" class="btn btn-sm btn-outline-light">
           <font-awesome-icon icon="cog" size="md" />
           {{ gameMode }}
@@ -18,14 +18,14 @@
           </button>
           <button
             @click="changeGameMode('Cheater')"
-            class="btn btn-sm  ml-3"
+            class="btn btn-sm ml-3"
             v-bind:class="[cheaterMode ? 'btn-danger' : 'btn-light']"
           >
             Cheater
           </button>
           <button
             @click="changeGameMode('Timed Voting')"
-            class="btn btn-sm  ml-3"
+            class="btn btn-sm ml-3"
             v-bind:class="[timedVoting ? 'btn-danger' : 'btn-light']"
           >
             Timed
@@ -62,7 +62,7 @@
 
       <div id="vote-actions" class="d-flex justify-content-between position-relative" v-if="!observer && !timedVoting">
         <button @click="clearVotes" class="btn btn-lg btn-dark">Clear Votes</button>
-        <button @click="showVotes" class="btn btn-lg  btn-dark">Show Votes</button>
+        <button @click="showVotes" class="btn btn-lg btn-dark">Show Votes</button>
       </div>
     </div>
     <div class="text-secondary text-center">
