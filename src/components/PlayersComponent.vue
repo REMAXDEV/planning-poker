@@ -7,11 +7,7 @@
       </tr>
     </thead>
     <tbody :class="{ 'table-success': showPoints }">
-      <tr
-        v-for="(player, index) in players"
-        :key="index"
-        :class="{ 'table-warning': player.point == 0 }"
-      >
+      <tr v-for="(player, index) in players" :key="index" :class="{ 'table-warning': player.point == 0 }">
         <td class="w-50" @contextmenu="deletePlayer($event, index)">{{ index | nameFilter }}</td>
         <td class="w-50">
           <font-awesome-icon v-if="!player.connected" icon="wifi" class="text-danger" />
@@ -22,18 +18,10 @@
               size="lg"
               class="text-success"
             />
-            <font-awesome-icon
-              v-else-if="!showPoints"
-              icon="ellipsis-h"
-              size="lg"
-              class="text-secondary"
-            />
+            <font-awesome-icon v-else-if="!showPoints" icon="ellipsis-h" size="lg" class="text-secondary" />
             <span class="point-value" v-if="(index === myName || showPoints) && player.point != 0">
               {{ player.point > 0 ? player.point : '?' }}
-              <span
-                v-if="checkCheaters(player)"
-                class="text-danger"
-              >(cheated)</span>
+              <span v-if="checkCheaters(player)" class="text-danger">(cheated)</span>
             </span>
             <small class="text-muted" v-else-if="showPoints && player.point == 0">Not Voting</small>
           </template>

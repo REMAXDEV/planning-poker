@@ -8,7 +8,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class PartyComponent extends Vue { }
+export default class PartyComponent extends Vue {}
 </script>
 
 <style scoped lang="scss">

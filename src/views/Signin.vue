@@ -1,9 +1,9 @@
 <template>
   <div class="p-5">
-    <h1 class="mb-4 text-center">Sign In</h1>
-    <form @submit.prevent="onSubmit">
+    <h1 class="mb-4 text-center text-white">Sign In</h1>
+    <form class="w-50 mx-auto" @submit.prevent="onSubmit">
       <div class="form-group">
-        <label for="exampleInputEmail1">Session Name</label>
+        <label class="text-white" for="exampleInputEmail1">Session Name</label>
         <input
           ref="roomInput"
           type="text"
@@ -14,7 +14,7 @@
         />
       </div>
       <div class="form-group">
-        <label for="exampleInputPassword1">Your Name</label>
+        <label class="text-white" for="exampleInputPassword1">Your Name</label>
         <input ref="myNameInput" type="text" class="form-control" v-model="myName" required />
       </div>
       <div class="mt-4">

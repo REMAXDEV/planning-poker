@@ -8,7 +8,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ConfettiComponent extends Vue { }
+export default class ConfettiComponent extends Vue {}
 </script>
 
 <style scoped lang="scss">
@@ -20,7 +20,7 @@ export default class ConfettiComponent extends Vue { }
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../../public/img/confetti-bg.png');
+  // background-image: url('../../public/img/confetti-bg.png');
   background-size: 100% auto;
   background-position: center 3rem;
   background-repeat: no-repeat;
