@@ -54,6 +54,7 @@ class FirebaseService {
       .then((snapshot: firebase.database.DataSnapshot) => {
         const res = snapshot.val();
         const room: Room = {
+          time: new Date().toISOString(),
           showPoints: 0,
           players: {},
         };
